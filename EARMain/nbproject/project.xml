@@ -15,9 +15,29 @@
                     <file>${reference.ApplicationMedecin.j2ee-module-car}</file>
                     <path-in-war>/</path-in-war>
                 </library>
+                <library>
+                    <file>${reference.ApplicationLaborantin.j2ee-module-car}</file>
+                    <path-in-war>/</path-in-war>
+                </library>
+                <library>
+                    <file>${reference.ApplicationPatient.j2ee-module-car}</file>
+                    <path-in-war>/</path-in-war>
+                </library>
+                <library>
+                    <file>${reference.EJBModule.dist-ear}</file>
+                    <path-in-war>/</path-in-war>
+                </library>
             </web-module-additional-libraries>
         </data>
         <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">
+            <reference>
+                <foreign-project>ApplicationLaborantin</foreign-project>
+                <artifact-type>j2ee_ear_archive</artifact-type>
+                <script>build.xml</script>
+                <target>dist-ear</target>
+                <clean-target>clean-ear</clean-target>
+                <id>j2ee-module-car</id>
+            </reference>
             <reference>
                 <foreign-project>ApplicationMedecin</foreign-project>
                 <artifact-type>j2ee_ear_archive</artifact-type>
@@ -25,6 +45,22 @@
                 <target>dist-ear</target>
                 <clean-target>clean-ear</clean-target>
                 <id>j2ee-module-car</id>
+            </reference>
+            <reference>
+                <foreign-project>ApplicationPatient</foreign-project>
+                <artifact-type>j2ee_ear_archive</artifact-type>
+                <script>build.xml</script>
+                <target>dist-ear</target>
+                <clean-target>clean-ear</clean-target>
+                <id>j2ee-module-car</id>
+            </reference>
+            <reference>
+                <foreign-project>EJBModule</foreign-project>
+                <artifact-type>j2ee_ear_archive</artifact-type>
+                <script>build.xml</script>
+                <target>dist-ear</target>
+                <clean-target>clean-ear</clean-target>
+                <id>dist-ear</id>
             </reference>
             <reference>
                 <foreign-project>Patient-ejb</foreign-project>

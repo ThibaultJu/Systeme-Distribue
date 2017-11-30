@@ -5,7 +5,7 @@
  */
 package applicationmedecin;
 
-import Patient.SessionBeanRemoteRemote;
+import EJB.*;
 import javax.ejb.EJB;
 
 /**
@@ -15,7 +15,10 @@ import javax.ejb.EJB;
 public class Main {
 
     @EJB
-    private static SessionBeanRemoteRemote sessionBeanRemote;
+    private static EJBAnalysesRemote ejb_Analyses;
+
+    @EJB
+    private static EJBPatientRemote sessionBeanRemote;
 
     /**
      * @param args the command line arguments
@@ -23,6 +26,7 @@ public class Main {
     public static void main(String[] args) {
         // TODO code application logic here
         System.out.println(sessionBeanRemote.sayHello("Jean-claude Van Damme"));
+        System.out.println(ejb_Analyses.sayHello("Jean-claude Van Damme"));
     }
     
 }
