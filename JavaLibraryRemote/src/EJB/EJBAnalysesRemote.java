@@ -6,6 +6,7 @@
 package EJB;
 
 import javax.ejb.Remote;
+import javax.jms.Session;
 
 /**
  *
@@ -15,5 +16,9 @@ import javax.ejb.Remote;
 public interface EJBAnalysesRemote {
 
     String sayHello(String name);
+
+    void sendMessageQueue();
+
+    void sendMessageTopic(String message);
     
 }
