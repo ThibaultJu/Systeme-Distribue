@@ -59,6 +59,7 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
             consumer.setMessageListener(this);
             System.out.println(eJBPatient.sayHello("Jean-claude Van Damme"));
             System.out.println(eJBAnalyses.sayHello("Jean-claude Van Damme"));
+            System.out.println("Patient : " + eJBPatient.getPatient(1));
         } catch (JMSException ex) {
             Logger.getLogger(Medecin.class.getName()).log(Level.SEVERE, null, ex);
         }

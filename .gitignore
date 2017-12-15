@@ -26,3 +26,9 @@
 /EJBModule/build/
 /EJBModule/dist/
 /EARMain/dist/
+/JPA/nbproject/private/
+/JPA/build/
+/JPA/dist
+/Test/nbproject/private/
+/Test/build/
+/Test/dist/

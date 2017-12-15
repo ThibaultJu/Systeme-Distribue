@@ -5,6 +5,8 @@
  */
 package EJB;
 
+
+import entities.*;
 import javax.ejb.Remote;
 
 /**
@@ -15,5 +17,5 @@ import javax.ejb.Remote;
 public interface EJBPatientRemote {
 
     String sayHello(String name);
-    
+    Patient getPatient(int id);
 }

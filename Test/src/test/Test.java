@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package EJB;
+package test;
 
 import entities.*;
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -15,31 +14,29 @@ import javax.persistence.Persistence;
  *
  * @author tibha
  */
-@Stateless
-public class EJBPatient implements EJBPatientRemote {
+public class Test {
 
-    @Override
-    public String sayHello(String name) {
-        return "Hello Patient" + name;
-    }
-
-    public Patient getPatient(int id)
-    {
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        
+        
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("JPAPU");
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         Patient c = new Patient();
         try
         {
+            /*c.setIdPatient(2);
             c.setNom("Hooghen");
             c.setPrenom("Vincent");
             c.setLogin("Vince");
             
-            em.persist(c);
+            em.persist(c);*/
             
-            Patient p2 = em.find(Patient.class, id);
-            
-            System.out.printf(p2.getNom());
+            Patient p2 = em.find(Patient.class, 1);
+            System.out.printf(p2.getPrenom());
             
             em.getTransaction().commit();
         }
@@ -52,8 +49,6 @@ public class EJBPatient implements EJBPatientRemote {
         {
             em.close();
         }
-        return c;
     }
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
+    
 }
