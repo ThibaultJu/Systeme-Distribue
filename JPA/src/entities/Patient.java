@@ -117,7 +117,7 @@ public class Patient implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Patient[ idPatient=" + idPatient + " ]";
+        return idPatient + nom + prenom;
     }
     
 }

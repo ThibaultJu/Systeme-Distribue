@@ -3,9 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package EJB;
+package WEB;
 
 import entities.*;
+import javax.jws.WebService;
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -15,17 +18,24 @@ import javax.persistence.Persistence;
  *
  * @author tibha
  */
-@Stateless
-public class EJBPatient implements EJBPatientRemote {
+@WebService(serviceName = "WebS")
+@Stateless()
+public class WebS {
 
-    @Override
-    public String sayHello(String name) {
-        return "Hello Patient" + name;
+    /**
+     * This is a sample web service operation
+     */
+    @WebMethod(operationName = "hello")
+    public String hello(@WebParam(name = "name") String txt) {
+        return "Hello " + txt + " !";
     }
 
-    @Override
-    public Patient getPatient(int id)
-    {
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "GetPatient")
+    public Patient GetPatient(@WebParam(name = "id") int id) {
+        
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("EJBModulePU");
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
@@ -56,6 +66,4 @@ public class EJBPatient implements EJBPatientRemote {
         }
         return c;
     }
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
 }

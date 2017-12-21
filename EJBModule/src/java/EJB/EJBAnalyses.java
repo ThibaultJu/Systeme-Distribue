@@ -5,6 +5,7 @@
  */
 package EJB;
 
+import entities.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -21,6 +22,9 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  *
@@ -70,6 +74,40 @@ public class EJBAnalyses implements EJBAnalysesRemote {
         } catch (JMSException ex) {
             Logger.getLogger(EJBAnalyses.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    @Override
+        public Analyses getAnalyses(int id)
+    {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EJBModulePU");
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        Analyses c = new Analyses();
+        try
+        {
+            /*c.setIdPatient(3);
+            c.setNom("Hooghen");
+            c.setPrenom("Vincent");
+            c.setLogin("Vince");
+            
+            em.persist(c);*/
+            
+            Analyses p2 = em.find(Analyses.class, id);
+            
+            System.out.printf(p2.getItem());
+            
+            em.getTransaction().commit();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            em.getTransaction().rollback();
+        }
+        finally
+        {
+            em.close();
+        }
+        return c;
     }
 
 }

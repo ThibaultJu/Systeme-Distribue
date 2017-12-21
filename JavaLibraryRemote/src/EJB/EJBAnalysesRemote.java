@@ -5,6 +5,7 @@
  */
 package EJB;
 
+import entities.Analyses;
 import javax.ejb.Remote;
 import javax.jms.Session;
 
@@ -21,4 +22,5 @@ public interface EJBAnalysesRemote {
 
     void sendMessageTopic(String message);
     
+    Analyses getAnalyses(int id);
 }

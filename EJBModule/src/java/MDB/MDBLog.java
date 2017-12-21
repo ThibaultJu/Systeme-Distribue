@@ -5,6 +5,7 @@
  */
 package MDB;
 
+import entities.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.ActivationConfigProperty;
@@ -13,6 +14,9 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  *
@@ -44,5 +48,39 @@ public class MDBLog implements MessageListener {
         } catch (JMSException ex) {
             Logger.getLogger(MDBLog.class.getName()).log(Level.SEVERE, null, ex);
         }      
-    }   
+    } 
+        
+    
+    public Patient getPatient(int id)
+    {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EJBModulePU");
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        Patient c = new Patient();
+        try
+        {
+            /*c.setIdPatient(3);
+            c.setNom("Hooghen");
+            c.setPrenom("Vincent");
+            c.setLogin("Vince");
+            
+            em.persist(c);*/
+            
+            Patient p2 = em.find(Patient.class, id);
+            
+            System.out.printf(p2.getNom());
+            
+            em.getTransaction().commit();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            em.getTransaction().rollback();
+        }
+        finally
+        {
+            em.close();
+        }
+        return c;
+    }
 }
