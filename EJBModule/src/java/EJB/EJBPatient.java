@@ -25,17 +25,18 @@ public class EJBPatient implements EJBPatientRemote {
 
     public Patient getPatient(int id)
     {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("JPAPU");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EJBModulePU");
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         Patient c = new Patient();
         try
         {
+            /*c.setIdPatient(3);
             c.setNom("Hooghen");
             c.setPrenom("Vincent");
             c.setLogin("Vince");
             
-            em.persist(c);
+            em.persist(c);*/
             
             Patient p2 = em.find(Patient.class, id);
             
