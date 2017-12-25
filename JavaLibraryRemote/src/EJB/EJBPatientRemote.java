@@ -18,4 +18,6 @@ public interface EJBPatientRemote {
 
     String sayHello(String name);
     Patient getPatient(int id);
+
+    Boolean CheckIdMedecin();
 }

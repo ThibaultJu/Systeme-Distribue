@@ -9,6 +9,8 @@ import entities.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jms.Connection;
@@ -33,6 +35,7 @@ import javax.persistence.Persistence;
 
 
 @Stateless
+@DeclareRoles({"Medecin", "Laborantin"})
 public class EJBAnalyses implements EJBAnalysesRemote {
 
     @Resource(mappedName = "jms/myTopic")
@@ -47,6 +50,7 @@ public class EJBAnalyses implements EJBAnalysesRemote {
 
 
     @Override
+    @RolesAllowed({"Medecin", "Laborantin"})
     public String sayHello(String name) {
         return"Hello analyse" + name;
     }

@@ -6,6 +6,7 @@
 package applicationlaborantin;
 
 import EJB.EJBAnalysesRemote;
+import static java.lang.System.exit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;

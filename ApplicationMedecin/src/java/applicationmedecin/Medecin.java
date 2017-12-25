@@ -7,6 +7,7 @@ package applicationmedecin;
 
 import EJB.EJBAnalysesRemote;
 import EJB.EJBPatientRemote;
+import static java.lang.System.exit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -17,7 +18,6 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
-import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
@@ -57,9 +57,15 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
             consumer = session.createConsumer(myTopic);
             
             consumer.setMessageListener(this);
+            if(eJBPatient.CheckIdMedecin())
+                System.out.println("Connexion OK");
+            else
+            {
+                exit(0);
+            }            
             System.out.println(eJBPatient.sayHello("Jean-claude Van Damme"));
             System.out.println(eJBAnalyses.sayHello("Jean-claude Van Damme"));
-            System.out.println("Patient : " + eJBPatient.getPatient(1));
+            System.out.println("Patient : " + eJBPatient.getPatient(2));
         } catch (JMSException ex) {
             Logger.getLogger(Medecin.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -133,7 +139,7 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
             
             System.out.println("Message = " + tm.getText());
         } catch (JMSException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Medecin.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

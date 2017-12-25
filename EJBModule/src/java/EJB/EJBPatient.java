@@ -6,6 +6,14 @@
 package EJB;
 
 import entities.*;
+import java.security.Principal;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
+import javax.annotation.Resource;
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -16,10 +24,14 @@ import javax.persistence.Persistence;
  * @author tibha
  */
 @Stateless
+@DeclareRoles("Medecin")
 public class EJBPatient implements EJBPatientRemote {
 
+    @Resource SessionContext ctx;
     @Override
-    public String sayHello(String name) {
+    
+    @RolesAllowed("Medecin")
+    public String sayHello(String name) { 
         return "Hello Patient" + name;
     }
 
@@ -39,9 +51,9 @@ public class EJBPatient implements EJBPatientRemote {
             
             em.persist(c);*/
             
-            Patient p2 = em.find(Patient.class, id);
+            c= em.find(Patient.class, id);
             
-            System.out.printf(p2.getNom());
+            System.out.printf(c.getNom());
             
             em.getTransaction().commit();
         }
@@ -58,4 +70,25 @@ public class EJBPatient implements EJBPatientRemote {
     }
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
+
+    @Override
+    public Boolean CheckIdMedecin() {
+        Principal callerPrincipal = ctx.getCallerPrincipal();
+        System.out.printf("Caller principal : "+callerPrincipal.getName()); 
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EJBModulePU");
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        Vector<Medecin> m = new Vector<Medecin>();
+        //Medecin m = new Medecin();
+        m= (Vector<Medecin>)em.createQuery("SELECT m FROM Medecin m WHERE m.login LIKE :LogMedecin")
+        .setParameter("LogMedecin", callerPrincipal.getName())
+        .setMaxResults(1)
+        .getResultList();
+        System.out.printf(m.firstElement().getPrenom());
+        em.getTransaction().commit();   
+        if(m.firstElement().getLogin() != null)
+            return true;
+        else
+            return false;
+    }
 }
