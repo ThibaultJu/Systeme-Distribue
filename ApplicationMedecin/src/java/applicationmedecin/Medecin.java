@@ -7,7 +7,9 @@ package applicationmedecin;
 
 import EJB.EJBAnalysesRemote;
 import EJB.EJBPatientRemote;
+import entities.Patient;
 import static java.lang.System.exit;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -21,6 +23,8 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
+import javax.swing.DefaultListModel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -35,7 +39,7 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
     private static ConnectionFactory myTopicFactory;
 
     @EJB
-    private static EJBPatientRemote eJBPatient;
+    protected static EJBPatientRemote eJBPatient;
 
     @EJB
     private static EJBAnalysesRemote eJBAnalyses;
@@ -47,6 +51,7 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
     private static Connection connection = null;
     private static Session session = null;
     private static MessageConsumer consumer;
+    protected AjoutPatient guiPatient;
     public Medecin() {
         try {
             initComponents();
@@ -55,7 +60,7 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
             session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
             connection.start();
             consumer = session.createConsumer(myTopic);
-            
+            guiPatient = new AjoutPatient(this,true,eJBPatient);
             consumer.setMessageListener(this);
             if(eJBPatient.CheckIdMedecin())
                 System.out.println("Connexion OK");
@@ -66,6 +71,18 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
             System.out.println(eJBPatient.sayHello("Jean-claude Van Damme"));
             System.out.println(eJBAnalyses.sayHello("Jean-claude Van Damme"));
             System.out.println("Patient : " + eJBPatient.getPatient(2));
+            DefaultTableModel dlm = (DefaultTableModel)jTablePatient.getModel();
+            Vector<Patient> ListPatient =eJBPatient.LoadPatients();
+            for(int i=0 ; i < ListPatient.size();i++)
+            {
+                Patient p = ListPatient.get(i);
+                Vector tmp = new Vector();
+                tmp.add(p.getIdPatient());
+                tmp.add(p.getNom());
+                tmp.add(p.getPrenom());
+                tmp.add(p.getLogin());
+                dlm.addRow(tmp);
+            }
         } catch (JMSException ex) {
             Logger.getLogger(Medecin.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -81,21 +98,85 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabelPatient = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTablePatient = new javax.swing.JTable();
+        jButtonAddPatient = new javax.swing.JButton();
+        jButtonUpdatePatient = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabelPatient.setText("Liste des patients");
+
+        jTablePatient.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+            },
+            new String [] {
+                "Identifiant", "Nom", "Prenom", "Login"
+            }
+        ));
+        jScrollPane2.setViewportView(jTablePatient);
+
+        jButtonAddPatient.setText("Ajouter un Patient");
+        jButtonAddPatient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddPatientActionPerformed(evt);
+            }
+        });
+
+        jButtonUpdatePatient.setText("Mise à jour du patient");
+        jButtonUpdatePatient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonUpdatePatientActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabelPatient)
+                        .addGap(36, 36, 36)
+                        .addComponent(jButtonAddPatient)
+                        .addGap(45, 45, 45)
+                        .addComponent(jButtonUpdatePatient))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(839, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(75, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButtonAddPatient)
+                            .addComponent(jLabelPatient))
+                        .addGap(15, 15, 15))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jButtonUpdatePatient)
+                        .addGap(18, 18, 18)))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButtonAddPatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddPatientActionPerformed
+        // TODO add your handling code here:
+        guiPatient.setVisible(true);        
+    }//GEN-LAST:event_jButtonAddPatientActionPerformed
+
+    private void jButtonUpdatePatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdatePatientActionPerformed
+        // TODO add your handling code here:
+        
+                
+    }//GEN-LAST:event_jButtonUpdatePatientActionPerformed
 
     /**
      * @param args the command line arguments
@@ -144,5 +225,10 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAddPatient;
+    private javax.swing.JButton jButtonUpdatePatient;
+    private javax.swing.JLabel jLabelPatient;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTablePatient;
     // End of variables declaration//GEN-END:variables
 }

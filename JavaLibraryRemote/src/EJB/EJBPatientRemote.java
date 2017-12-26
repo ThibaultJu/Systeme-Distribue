@@ -7,6 +7,7 @@ package EJB;
 
 
 import entities.*;
+import java.util.Vector;
 import javax.ejb.Remote;
 
 /**
@@ -20,4 +21,8 @@ public interface EJBPatientRemote {
     Patient getPatient(int id);
 
     Boolean CheckIdMedecin();
+
+    Vector LoadPatients();
+
+    Boolean AjoutPatient(Patient p);
 }

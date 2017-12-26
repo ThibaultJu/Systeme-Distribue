@@ -6,9 +6,8 @@
 package EJB;
 
 import entities.*;
+import static java.lang.StrictMath.toIntExact;
 import java.security.Principal;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Vector;
 import javax.annotation.Resource;
 import javax.annotation.security.DeclareRoles;
@@ -18,6 +17,9 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 
 /**
  *
@@ -28,14 +30,14 @@ import javax.persistence.Persistence;
 public class EJBPatient implements EJBPatientRemote {
 
     @Resource SessionContext ctx;
-    @Override
-    
+    @Override    
     @RolesAllowed("Medecin")
     public String sayHello(String name) { 
         return "Hello Patient" + name;
     }
 
     @Override
+    @RolesAllowed("Medecin")
     public Patient getPatient(int id)
     {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("EJBModulePU");
@@ -72,6 +74,7 @@ public class EJBPatient implements EJBPatientRemote {
     // "Insert Code > Add Business Method")
 
     @Override
+    @RolesAllowed("Medecin")
     public Boolean CheckIdMedecin() {
         Principal callerPrincipal = ctx.getCallerPrincipal();
         System.out.printf("Caller principal : "+callerPrincipal.getName()); 
@@ -90,5 +93,54 @@ public class EJBPatient implements EJBPatientRemote {
             return true;
         else
             return false;
+    }
+
+    @Override
+    @RolesAllowed("Medecin")
+    public Vector LoadPatients() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EJBModulePU");
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        Vector<Patient> ListPatient = new Vector<Patient>();
+        
+        ListPatient= (Vector<Patient>)em.createQuery("SELECT p FROM Patient p")
+        .getResultList();
+        em.getTransaction().commit();   
+        em.close();
+        return ListPatient;
+    }
+
+    @Override
+    @RolesAllowed("Medecin")
+    public Boolean AjoutPatient(Patient p) {
+        
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EJBModulePU");
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        try
+        {
+            //Count
+            CriteriaBuilder qb = em.getCriteriaBuilder();
+            CriteriaQuery<Long> cq = qb.createQuery(Long.class);
+            cq.select(qb.count(cq.from(Patient.class)));
+            Long tmp = em.createQuery(cq).getSingleResult();
+            int var = toIntExact(++tmp);
+            p.setIdPatient(var);
+            System.out.println("Patient avec id: " + p);        
+            em.persist(p);
+            em.getTransaction().commit();            
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            em.getTransaction().rollback();
+            return false;
+        }
+        finally
+        {
+            em.close();
+            return true;
+        }
+        
     }
 }
