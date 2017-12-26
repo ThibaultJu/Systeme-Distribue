@@ -23,7 +23,6 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
-import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -51,7 +50,8 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
     private static Connection connection = null;
     private static Session session = null;
     private static MessageConsumer consumer;
-    protected AjoutPatient guiPatient;
+    protected AjoutPatient guiAddPatient;
+    protected UpdatePatient guiUpdatePatient;
     public Medecin() {
         try {
             initComponents();
@@ -60,7 +60,8 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
             session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
             connection.start();
             consumer = session.createConsumer(myTopic);
-            guiPatient = new AjoutPatient(this,true,eJBPatient);
+            guiAddPatient = new AjoutPatient(this,true,eJBPatient);
+            guiUpdatePatient = new UpdatePatient(this,true,eJBPatient);
             consumer.setMessageListener(this);
             if(eJBPatient.CheckIdMedecin())
                 System.out.println("Connexion OK");
@@ -71,24 +72,36 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
             System.out.println(eJBPatient.sayHello("Jean-claude Van Damme"));
             System.out.println(eJBAnalyses.sayHello("Jean-claude Van Damme"));
             System.out.println("Patient : " + eJBPatient.getPatient(2));
-            DefaultTableModel dlm = (DefaultTableModel)jTablePatient.getModel();
-            Vector<Patient> ListPatient =eJBPatient.LoadPatients();
-            for(int i=0 ; i < ListPatient.size();i++)
-            {
-                Patient p = ListPatient.get(i);
-                Vector tmp = new Vector();
-                tmp.add(p.getIdPatient());
-                tmp.add(p.getNom());
-                tmp.add(p.getPrenom());
-                tmp.add(p.getLogin());
-                dlm.addRow(tmp);
-            }
+            LoadPatient();
         } catch (JMSException ex) {
             Logger.getLogger(Medecin.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
 
+    private void LoadPatient()
+    {
+        jTablePatient.setModel(new javax.swing.table.DefaultTableModel(
+        new Object [][] {
+        },
+        new String [] {
+            "Identifiant", "Nom", "Prenom", "Login"
+        }
+        ));
+        DefaultTableModel dlm = (DefaultTableModel)jTablePatient.getModel();
+
+        Vector<Patient> ListPatient =eJBPatient.LoadPatients();
+        for(int i=0 ; i < ListPatient.size();i++)
+        {
+            Patient p = ListPatient.get(i);
+            Vector tmp = new Vector();
+            tmp.add(p.getIdPatient());
+            tmp.add(p.getNom());
+            tmp.add(p.getPrenom());
+            tmp.add(p.getLogin());
+            dlm.addRow(tmp);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -169,12 +182,26 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
 
     private void jButtonAddPatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddPatientActionPerformed
         // TODO add your handling code here:
-        guiPatient.setVisible(true);        
+        guiAddPatient.setVisible(true);
+        LoadPatient();
+        
     }//GEN-LAST:event_jButtonAddPatientActionPerformed
 
     private void jButtonUpdatePatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdatePatientActionPerformed
         // TODO add your handling code here:
-        
+        Patient patient = new Patient();
+        DefaultTableModel dlm = (DefaultTableModel)jTablePatient.getModel();
+        if(!jTablePatient.getSelectionModel().isSelectionEmpty())
+        {
+            int row = jTablePatient.getSelectedRow();
+            patient.setIdPatient((int)dlm.getValueAt(row, 0));
+            patient.setNom((String)dlm.getValueAt(row, 1));
+            patient.setPrenom((String)dlm.getValueAt(row, 2));
+            patient.setLogin((String)dlm.getValueAt(row, 3));
+            guiUpdatePatient.setPatient(patient);
+            guiUpdatePatient.setVisible(true);
+        }
+        LoadPatient();
                 
     }//GEN-LAST:event_jButtonUpdatePatientActionPerformed
 

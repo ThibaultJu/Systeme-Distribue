@@ -4,5 +4,5 @@ Created-By: 1.8.0_141-b15 (Oracle Corporation)
 X-COMMENT: Main-Class will be added automatically by build
 Main-Class: applicationmedecin.Medecin
 Class-Path: JPA.jar lib/JPA.jar JavaLibraryRemote.jar lib/JavaLibraryR
- emote.jar 
+ emote.jar JavaLibraryRemote.jar lib/JavaLibraryRemote.jar 
 

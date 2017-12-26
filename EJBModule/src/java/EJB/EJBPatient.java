@@ -132,7 +132,6 @@ public class EJBPatient implements EJBPatientRemote {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
             em.getTransaction().rollback();
             return false;
         }
@@ -140,7 +139,30 @@ public class EJBPatient implements EJBPatientRemote {
         {
             em.close();
             return true;
+        }       
+    }
+
+    @Override
+    @RolesAllowed("Medecin")
+    public void UpdatePatient(Patient p) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EJBModulePU");
+        EntityManager em = emf.createEntityManager();
+        Patient patient = em.find(Patient.class, p.getIdPatient());
+        try
+        {
+            em.getTransaction().begin();
+            patient.setNom(p.getNom());
+            patient.setPrenom(p.getPrenom());
+            patient.setLogin(p.getLogin());
+            em.getTransaction().commit();            
         }
-        
+        catch(Exception e)
+        {
+            em.getTransaction().rollback();
+        }
+        finally
+        {
+            em.close();
+        } 
     }
 }

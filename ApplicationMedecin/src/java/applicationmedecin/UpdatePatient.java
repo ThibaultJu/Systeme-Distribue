@@ -6,26 +6,27 @@
 package applicationmedecin;
 
 import EJB.EJBPatientRemote;
+import static applicationmedecin.Medecin.eJBPatient;
 import entities.Patient;
 import javax.ejb.EJB;
-import javax.swing.JOptionPane;
 
 /**
  *
  * @author tibha
  */
-public class AjoutPatient extends javax.swing.JDialog {
+public class UpdatePatient extends javax.swing.JDialog {
 
     @EJB
     private static EJBPatientRemote eJBPatient;
 
     /**
-     * Creates new form AjoutPatient
+     * Creates new form UpdatePatient
      */
-    public AjoutPatient(java.awt.Frame parent, boolean modal,EJBPatientRemote ejb) {
+    private Patient patient;
+    public UpdatePatient(java.awt.Frame parent, boolean modal,EJBPatientRemote eJB) {
         super(parent, modal);
-        eJBPatient = ejb;
         initComponents();
+        eJBPatient = eJB;
     }
 
     /**
@@ -62,7 +63,7 @@ public class AjoutPatient extends javax.swing.JDialog {
         });
 
         jLabelTitre.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabelTitre.setText("Ajout d'un patient");
+        jLabelTitre.setText("Modification d'un patient");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -71,29 +72,29 @@ public class AjoutPatient extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(95, 95, 95)
-                        .addComponent(jButtonSavePatient))
+                        .addGap(92, 92, 92)
+                        .addComponent(jLabelTitre))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(43, 43, 43)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jTextFieldNom)
-                            .addComponent(jTextFieldPrenom)
-                            .addComponent(jTextFieldLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 121, Short.MAX_VALUE)
-                .addComponent(jLabelTitre)
-                .addGap(119, 119, 119))
+                        .addGap(49, 49, 49)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(52, 52, 52)
+                                .addComponent(jButtonSavePatient))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel2)
+                                .addComponent(jLabel3)
+                                .addComponent(jLabel4)
+                                .addComponent(jTextFieldNom)
+                                .addComponent(jTextFieldPrenom)
+                                .addComponent(jTextFieldLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(91, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(23, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabelTitre)
-                .addGap(18, 18, 18)
+                .addGap(37, 37, 37)
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
                 .addComponent(jTextFieldNom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -107,7 +108,7 @@ public class AjoutPatient extends javax.swing.JDialog {
                 .addComponent(jTextFieldLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addComponent(jButtonSavePatient)
-                .addGap(45, 45, 45))
+                .addGap(26, 26, 26))
         );
 
         pack();
@@ -115,21 +116,12 @@ public class AjoutPatient extends javax.swing.JDialog {
 
     private void jButtonSavePatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSavePatientActionPerformed
         // TODO add your handling code here:
-         if(!jTextFieldNom.getText().equals("") && !jTextFieldPrenom.getText().equals("") && !jTextFieldLogin.getText().equals("") )
-        {
-            Patient p = new Patient();
-            p.setIdPatient(0);
-            p.setNom(jTextFieldNom.getText());
-            p.setPrenom(jTextFieldPrenom.getText());
-            p.setLogin(jTextFieldLogin.getText());
-            System.out.println("Patient :"+p + p.getLogin());
-            eJBPatient.AjoutPatient(p);
-            this.setVisible(false);
-        }
-        else
-        {
-            JOptionPane.showMessageDialog(this, "Veuillez remplir touts les champs");
-        }
+        patient.setLogin(jTextFieldLogin.getText());
+        patient.setNom(jTextFieldNom.getText());
+        patient.setPrenom(jTextFieldPrenom.getText());        
+        eJBPatient.UpdatePatient(patient);
+        this.setVisible(false);
+
     }//GEN-LAST:event_jButtonSavePatientActionPerformed
 
     /**
@@ -149,20 +141,20 @@ public class AjoutPatient extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AjoutPatient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UpdatePatient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AjoutPatient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UpdatePatient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AjoutPatient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UpdatePatient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AjoutPatient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UpdatePatient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                AjoutPatient dialog = new AjoutPatient(new javax.swing.JFrame(), true,null);
+                UpdatePatient dialog = new UpdatePatient(new javax.swing.JFrame(), true, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -184,4 +176,21 @@ public class AjoutPatient extends javax.swing.JDialog {
     private javax.swing.JTextField jTextFieldNom;
     private javax.swing.JTextField jTextFieldPrenom;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * @return the patient
+     */
+    public Patient getPatient() {
+        return patient;
+    }
+
+    /**
+     * @param patient the patient to set
+     */
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+        jTextFieldLogin.setText(patient.getLogin());
+        jTextFieldNom.setText(patient.getNom());
+        jTextFieldPrenom.setText(patient.getPrenom());
+    }
 }

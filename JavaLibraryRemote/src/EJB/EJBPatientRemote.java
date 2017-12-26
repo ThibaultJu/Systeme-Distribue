@@ -25,4 +25,6 @@ public interface EJBPatientRemote {
     Vector LoadPatients();
 
     Boolean AjoutPatient(Patient p);
+
+    void UpdatePatient(Patient p);
 }
