@@ -6,6 +6,8 @@
 package EJB;
 
 import entities.Analyses;
+import entities.Demande;
+import java.util.Vector;
 import javax.ejb.Remote;
 import javax.jms.Session;
 
@@ -18,9 +20,15 @@ public interface EJBAnalysesRemote {
 
     String sayHello(String name);
 
-    void sendMessageQueue();
+    void sendMessageQueue(String message);
 
     void sendMessageTopic(String message);
     
     Analyses getAnalyses(int id);
+
+    int AddAnalyse(Demande analyse);
+
+    Void AddAnalyse(Analyses analyse);
+
+    Vector getAnalyses();
 }

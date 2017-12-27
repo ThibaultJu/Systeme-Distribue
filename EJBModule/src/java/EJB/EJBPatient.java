@@ -46,17 +46,7 @@ public class EJBPatient implements EJBPatientRemote {
         Patient c = new Patient();
         try
         {
-            /*c.setIdPatient(3);
-            c.setNom("Hooghen");
-            c.setPrenom("Vincent");
-            c.setLogin("Vince");
-            
-            em.persist(c);*/
-            
-            c= em.find(Patient.class, id);
-            
-            System.out.printf(c.getNom());
-            
+            c= em.find(Patient.class, id);                        
             em.getTransaction().commit();
         }
         catch(Exception e)
@@ -75,7 +65,7 @@ public class EJBPatient implements EJBPatientRemote {
 
     @Override
     @RolesAllowed("Medecin")
-    public Boolean CheckIdMedecin() {
+    public int CheckIdMedecin() {
         Principal callerPrincipal = ctx.getCallerPrincipal();
         System.out.printf("Caller principal : "+callerPrincipal.getName()); 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("EJBModulePU");
@@ -87,12 +77,11 @@ public class EJBPatient implements EJBPatientRemote {
         .setParameter("LogMedecin", callerPrincipal.getName())
         .setMaxResults(1)
         .getResultList();
-        System.out.printf(m.firstElement().getPrenom());
         em.getTransaction().commit();   
         if(m.firstElement().getLogin() != null)
-            return true;
+            return m.firstElement().getIdmedecin();
         else
-            return false;
+            return 0;
     }
 
     @Override

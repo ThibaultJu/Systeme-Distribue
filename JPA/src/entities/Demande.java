@@ -11,8 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -30,9 +28,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Demande.findAll", query = "SELECT d FROM Demande d")
     , @NamedQuery(name = "Demande.findByIdDemande", query = "SELECT d FROM Demande d WHERE d.idDemande = :idDemande")
+    , @NamedQuery(name = "Demande.findByRefPatient", query = "SELECT d FROM Demande d WHERE d.refPatient = :refPatient")
+    , @NamedQuery(name = "Demande.findByRefMedecin", query = "SELECT d FROM Demande d WHERE d.refMedecin = :refMedecin")
     , @NamedQuery(name = "Demande.findByDateHeureDemande", query = "SELECT d FROM Demande d WHERE d.dateHeureDemande = :dateHeureDemande")
-    , @NamedQuery(name = "Demande.findByUrgent", query = "SELECT d FROM Demande d WHERE d.urgent = :urgent")
-    , @NamedQuery(name = "Demande.findByDemandecol", query = "SELECT d FROM Demande d WHERE d.demandecol = :demandecol")})
+    , @NamedQuery(name = "Demande.findByUrgent", query = "SELECT d FROM Demande d WHERE d.urgent = :urgent")})
 public class Demande implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,19 +39,15 @@ public class Demande implements Serializable {
     @Basic(optional = false)
     @Column(name = "idDemande")
     private Integer idDemande;
+    @Column(name = "RefPatient")
+    private Integer refPatient;
+    @Column(name = "RefMedecin")
+    private Integer refMedecin;
     @Column(name = "DateHeureDemande")
     @Temporal(TemporalType.DATE)
     private Date dateHeureDemande;
     @Column(name = "Urgent")
-    private String urgent;
-    @Column(name = "Demandecol")
-    private Short demandecol;
-    @JoinColumn(name = "RefMedecin", referencedColumnName = "idmedecin")
-    @ManyToOne
-    private Medecin refMedecin;
-    @JoinColumn(name = "RefPatient", referencedColumnName = "idPatient")
-    @ManyToOne
-    private Patient refPatient;
+    private Short urgent;
 
     public Demande() {
     }
@@ -69,6 +64,22 @@ public class Demande implements Serializable {
         this.idDemande = idDemande;
     }
 
+    public Integer getRefPatient() {
+        return refPatient;
+    }
+
+    public void setRefPatient(Integer refPatient) {
+        this.refPatient = refPatient;
+    }
+
+    public Integer getRefMedecin() {
+        return refMedecin;
+    }
+
+    public void setRefMedecin(Integer refMedecin) {
+        this.refMedecin = refMedecin;
+    }
+
     public Date getDateHeureDemande() {
         return dateHeureDemande;
     }
@@ -77,36 +88,12 @@ public class Demande implements Serializable {
         this.dateHeureDemande = dateHeureDemande;
     }
 
-    public String getUrgent() {
+    public Short getUrgent() {
         return urgent;
     }
 
-    public void setUrgent(String urgent) {
+    public void setUrgent(Short urgent) {
         this.urgent = urgent;
-    }
-
-    public Short getDemandecol() {
-        return demandecol;
-    }
-
-    public void setDemandecol(Short demandecol) {
-        this.demandecol = demandecol;
-    }
-
-    public Medecin getRefMedecin() {
-        return refMedecin;
-    }
-
-    public void setRefMedecin(Medecin refMedecin) {
-        this.refMedecin = refMedecin;
-    }
-
-    public Patient getRefPatient() {
-        return refPatient;
-    }
-
-    public void setRefPatient(Patient refPatient) {
-        this.refPatient = refPatient;
     }
 
     @Override

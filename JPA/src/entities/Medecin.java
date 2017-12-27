@@ -6,17 +6,14 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -44,8 +41,6 @@ public class Medecin implements Serializable {
     private String prenom;
     @Column(name = "Login")
     private String login;
-    @OneToMany(mappedBy = "refMedecin")
-    private Collection<Demande> demandeCollection;
 
     public Medecin() {
     }
@@ -84,15 +79,6 @@ public class Medecin implements Serializable {
 
     public void setLogin(String login) {
         this.login = login;
-    }
-
-    @XmlTransient
-    public Collection<Demande> getDemandeCollection() {
-        return demandeCollection;
-    }
-
-    public void setDemandeCollection(Collection<Demande> demandeCollection) {
-        this.demandeCollection = demandeCollection;
     }
 
     @Override

@@ -781,15 +781,18 @@ exists or setup the property manually. For example like this:
     </target>
     <target depends="compile" if="is.server.weblogic" name="library-inclusion-in-archive">
         <basename file="${file.reference.JavaLibraryRemote.jar}" property="manifest.file.reference.JavaLibraryRemote.jar"/>
+        <basename file="${file.reference.JPA.jar}" property="manifest.file.reference.JPA.jar"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Extension-List" value="jar-1 "/>
+            <attribute name="Extension-List" value="jar-1 jar-2 "/>
             <attribute name="jar-1-Extension-Name" value="${manifest.file.reference.JavaLibraryRemote.jar}"/>
+            <attribute name="jar-2-Extension-Name" value="${manifest.file.reference.JPA.jar}"/>
         </manifest>
     </target>
     <target depends="compile" if="dist.ear.dir" name="library-inclusion-in-manifest">
         <copyfiles files="${file.reference.JavaLibraryRemote.jar}" manifestproperty="manifest.file.reference.JavaLibraryRemote.jar" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.JPA.jar}" manifestproperty="manifest.file.reference.JPA.jar" todir="${dist.ear.dir}/lib"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${manifest.file.reference.JavaLibraryRemote.jar} lib/${manifest.file.reference.JavaLibraryRemote.jar} "/>
+            <attribute name="Class-Path" value="${manifest.file.reference.JavaLibraryRemote.jar} lib/${manifest.file.reference.JavaLibraryRemote.jar} ${manifest.file.reference.JPA.jar} lib/${manifest.file.reference.JPA.jar} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">
