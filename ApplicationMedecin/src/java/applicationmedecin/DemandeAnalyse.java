@@ -7,7 +7,6 @@ package applicationmedecin;
 
 import EJB.EJBAnalysesRemote;
 import entities.Demande;
-import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import javax.ejb.EJB;
@@ -191,11 +190,12 @@ public class DemandeAnalyse extends javax.swing.JDialog {
         {
             int id = eJBAnalyses.AddAnalyse(d);
             eJBAnalyses.sendMessageQueue(id + "@@" + demande);
+            JOptionPane.showMessageDialog(this, "Voici le numéro de analyse" + id, "Numéro d'analyse", JOptionPane.INFORMATION_MESSAGE);
             this.setVisible(false);
         }
         else
         {
-            JOptionPane.showMessageDialog(this, "Veuillez selectionner au moins un cham a analyser !", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Veuillez selectionner au moins un champs a analyser !", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_jButtonDemandeActionPerformed

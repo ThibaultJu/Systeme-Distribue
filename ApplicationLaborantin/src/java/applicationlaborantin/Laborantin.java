@@ -8,7 +8,8 @@ package applicationlaborantin;
 import EJB.EJBAnalysesRemote;
 import entities.Analyses;
 import static java.lang.Integer.parseInt;
-import static java.lang.System.exit;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,9 +58,7 @@ public class Laborantin  extends javax.swing.JFrame implements MessageListener{
             session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
             connection.start();
             consumer = session.createConsumer(myQueue);
-            consumer.setMessageListener(this);
-            ejb_Analyses.sendMessageTopic("SLT MDB");
-             
+            consumer.setMessageListener(this);             
         } catch (JMSException ex) {
             Logger.getLogger(Laborantin.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -228,10 +227,14 @@ public class Laborantin  extends javax.swing.JFrame implements MessageListener{
         analyse.setValeur(ValeurAnalyseEnCours);
         ejb_Analyses.AddAnalyse(analyse);
         if(AnalyseEnCours.contains("URGENT"))
-            ejb_Analyses.sendMessageTopic(analyse.getIdAnalyses().toString() + "@@" + analyse.getItem() + "@@" + analyse.getValeur());
+        {
+            ejb_Analyses.sendMessageTopic(analyse.getIdAnalyses().toString() + "@@" + analyse.getItem() + "@@" + analyse.getValeur(),false);
+        }
+        ejb_Analyses.sendMessageTopic(analyse.getIdAnalyses().toString(),true);
         if(list.isEmpty())
         {
             AnalyseEnCours = "";
+            ValeurAnalyseEnCours = "";
             setTextField();
             jLabelAnalyse.setText("Pas d'analyse en cours");
             jLabelAnalyse.setForeground(new java.awt.Color(255, 0, 0));
@@ -240,6 +243,7 @@ public class Laborantin  extends javax.swing.JFrame implements MessageListener{
         else
         {
             AnalyseEnCours = (String) list.getFirst();
+            ValeurAnalyseEnCours = "";
             System.out.println(AnalyseEnCours);
             setTextField();
             jLabelAnalyse.setText("Analyse a faire");
@@ -290,6 +294,7 @@ public class Laborantin  extends javax.swing.JFrame implements MessageListener{
     private void getTextField()
     {
             String txt = AnalyseEnCours;
+            ValeurAnalyseEnCours = "";
             if(AnalyseEnCours.contains("Leucocytes"))
             {
                 ValeurAnalyseEnCours = ValeurAnalyseEnCours + jTextFieldLeucocytes.getText()+"@";
@@ -332,6 +337,14 @@ public class Laborantin  extends javax.swing.JFrame implements MessageListener{
                 tmp=txt.split("@@");
                 numAnalyse = parseInt(tmp[0]);
             }
+            jTextFieldLeucocytes.setText("");
+            jTextFieldHematies.setText("");
+            jTextFieldCCMH.setText("");
+            jTextFieldHematocrite.setText("");
+            jTextFieldHemoglobine.setText("");
+            jTextFieldRDW.setText("");
+            jTextFieldTCMH.setText("");
+            jTextFieldVGM.setText("");
             if(AnalyseEnCours.contains("Leucocytes"))
             {
                 jTextFieldLeucocytes.enable(true);

@@ -277,8 +277,6 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
     private void jButtonAnalyseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnalyseActionPerformed
     
         LoadAnalyses(0);
-
-
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonAnalyseActionPerformed
 
@@ -316,7 +314,7 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
             Analyses p = listAnalyses.get(i);
             String item[] = p.getItem().split("@");
             String valeur[] = p.getValeur().split("@");
-            for(int j =0;j<item.length;j++)
+            for(int j =0;j<valeur.length;j++)
             {
                 Vector tmp = new Vector();
                 tmp.add(p.getIdAnalyses());
@@ -364,9 +362,25 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
     public void onMessage(Message message) {
         try
         {
-            TextMessage tm = (TextMessage)message;
             
-            System.out.println("Message = " + tm.getText());
+            TextMessage tm = (TextMessage)message;
+            DefaultTableModel dlm = (DefaultTableModel)jTableAnalyses.getModel();
+            if(!tm.getBooleanProperty("toMDB"))
+            {
+                String str = tm.getText();
+                String chaine[] = str.split("@@");
+                String item[] = chaine[1].split("@");
+                String valeur[] = chaine[2].split("@");
+                for(int j =0;j<valeur.length;j++)
+                {
+                    Vector tmp = new Vector();
+                    tmp.add(chaine[0]);
+                    tmp.add(item[j]);
+                    tmp.add(valeur[j]);
+                    dlm.addRow(tmp);
+                }            
+                
+            }
         } catch (JMSException ex) {
             Logger.getLogger(Medecin.class.getName()).log(Level.SEVERE, null, ex);
         }

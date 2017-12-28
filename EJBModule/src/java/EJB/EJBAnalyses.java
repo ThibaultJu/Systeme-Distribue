@@ -70,14 +70,21 @@ public class EJBAnalyses implements EJBAnalysesRemote {
     }
 
     @Override
-    public void sendMessageTopic(String message) {
+    public void sendMessageTopic(String message,boolean MDB) {
         try {
             
             TextMessage tm = context.createTextMessage();
             tm.setText(message);
-            tm.setBooleanProperty("toMDB", true);
+            if(MDB)
+            {
+                tm.setBooleanProperty("toMDB", true);
+            }    
+            else
+            {
+                tm.setBooleanProperty("toMDB", false);
+            }
+            
             context.createProducer().send(myTopic, tm);
-            //producer.send(tm);
 
         } catch (JMSException ex) {
             Logger.getLogger(EJBAnalyses.class.getName()).log(Level.SEVERE, null, ex);

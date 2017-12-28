@@ -22,7 +22,7 @@ public interface EJBAnalysesRemote {
 
     void sendMessageQueue(String message);
 
-    void sendMessageTopic(String message);
+    void sendMessageTopic(String message,boolean MDB);
     
     Analyses getAnalyses(int id);
 
