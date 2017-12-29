@@ -70,18 +70,30 @@ public class MDBLog implements MessageListener {
             {
                 em.getTransaction().rollback();
             }
+            Date dateDemande = c.getDateHeureDemande();
+            System.out.println("date fin demande" + dateDemande);
+            int secondes = MinutesBetween(dateDemande,myDate);
+            int heures = secondes / (60 * 60);secondes = secondes % (60 * 60);
+            int minutes = secondes / (60);secondes = secondes % (60);
+            //System.out.println("La durée de traitement de l’analyse " + tm.getText() + " a été de " + heures +  "h " + minutes + " min" + secondes + "secondes");
+            //ajout dans log
+            Logs log = new Logs();
+            log.setIdLogs(id);
+            log.setInfos("La durée de traitement de l’analyse " + tm.getText() + " a été de " + heures +  " h " + minutes + " min " + secondes + " secondes");
+            try
+            {
+                em.getTransaction().begin();
+                em.persist(log);
+                em.getTransaction().commit();
+            }
+            catch(Exception e)
+            {
+                em.getTransaction().rollback();
+            }
             finally
             {
                 em.close();
             }
-            Date dateDemande = c.getDateHeureDemande();
-            System.out.println("date fin demande" + dateDemande);
-            int secondes = MinutesBetween(dateDemande,myDate);
-            int jours = secondes / (60 * 60 * 24);secondes = secondes % (60 * 60 * 24);
-            int heures = secondes / (60 * 60);secondes = secondes % (60 * 60);
-            int minutes = secondes / (60);secondes = secondes % (60);
-            int sec= secondes ;
-            System.out.println("Il aura fallu " + jours + " Jours " +  heures + " Heures " + minutes + " Minutes " + sec + " Secondes ");
         } catch (JMSException ex) {
             Logger.getLogger(MDBLog.class.getName()).log(Level.SEVERE, null, ex);
         }      

@@ -22,37 +22,19 @@ import javax.persistence.Persistence;
 @Stateless()
 public class WebS {
 
-    /**
-     * This is a sample web service operation
-     */
-    @WebMethod(operationName = "hello")
-    public String hello(@WebParam(name = "name") String txt) {
-        return "Hello " + txt + " !";
-    }
 
     /**
      * Web service operation
      */
-    @WebMethod(operationName = "GetPatient")
-    public Patient GetPatient(@WebParam(name = "id") int id) {
-        
+    @WebMethod(operationName = "getAnalyse")
+    public Analyses getAnalyse(@WebParam(name = "id") int id) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("EJBModulePU");
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        Patient c = new Patient();
+        Analyses c = new Analyses();
         try
-        {
-            /*c.setIdPatient(3);
-            c.setNom("Hooghen");
-            c.setPrenom("Vincent");
-            c.setLogin("Vince");
-            
-            em.persist(c);*/
-            
-            Patient p2 = em.find(Patient.class, id);
-            
-            System.out.printf(p2.getNom());
-            
+        {            
+            c = em.find(Analyses.class, id);                      
             em.getTransaction().commit();
         }
         catch(Exception e)
@@ -66,4 +48,5 @@ public class WebS {
         }
         return c;
     }
+
 }
