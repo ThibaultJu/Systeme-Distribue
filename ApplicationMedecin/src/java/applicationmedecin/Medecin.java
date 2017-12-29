@@ -7,6 +7,10 @@ package applicationmedecin;
 
 import EJB.EJBAnalysesRemote;
 import EJB.EJBPatientRemote;
+import entities.*;
+import static java.lang.Integer.parseInt;
+import static java.lang.System.exit;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -17,10 +21,10 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
-import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -35,7 +39,7 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
     private static ConnectionFactory myTopicFactory;
 
     @EJB
-    private static EJBPatientRemote eJBPatient;
+    protected static EJBPatientRemote eJBPatient;
 
     @EJB
     private static EJBAnalysesRemote eJBAnalyses;
@@ -47,6 +51,10 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
     private static Connection connection = null;
     private static Session session = null;
     private static MessageConsumer consumer;
+    private int idMedecin;
+    protected AjoutPatient guiAddPatient;
+    protected UpdatePatient guiUpdatePatient;
+    protected DemandeAnalyse guiDemandeAnalyse;
     public Medecin() {
         try {
             initComponents();
@@ -55,16 +63,47 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
             session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
             connection.start();
             consumer = session.createConsumer(myTopic);
-            
+            guiAddPatient = new AjoutPatient(this,true,eJBPatient);
+            guiUpdatePatient = new UpdatePatient(this,true,eJBPatient);
+            guiDemandeAnalyse = new DemandeAnalyse(this,true,eJBAnalyses);
             consumer.setMessageListener(this);
-            System.out.println(eJBPatient.sayHello("Jean-claude Van Damme"));
-            System.out.println(eJBAnalyses.sayHello("Jean-claude Van Damme"));
+            idMedecin = eJBPatient.CheckIdMedecin();
+            if(idMedecin !=0)
+                System.out.println("Connexion OK");
+            else
+            {
+                exit(0);
+            }
+            LoadPatient();
         } catch (JMSException ex) {
             Logger.getLogger(Medecin.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
 
+    private void LoadPatient()
+    {
+        jTablePatient.setModel(new javax.swing.table.DefaultTableModel(
+        new Object [][] {
+        },
+        new String [] {
+            "Identifiant", "Nom", "Prenom", "Login"
+        }
+        ));
+        DefaultTableModel dlm = (DefaultTableModel)jTablePatient.getModel();
+
+        Vector<Patient> ListPatient =eJBPatient.LoadPatients();
+        for(int i=0 ; i < ListPatient.size();i++)
+        {
+            Patient p = ListPatient.get(i);
+            Vector tmp = new Vector();
+            tmp.add(p.getIdPatient());
+            tmp.add(p.getNom());
+            tmp.add(p.getPrenom());
+            tmp.add(p.getLogin());
+            dlm.addRow(tmp);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -74,22 +113,214 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabelPatient = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTablePatient = new javax.swing.JTable();
+        jButtonAddPatient = new javax.swing.JButton();
+        jButtonUpdatePatient = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTableAnalyses = new javax.swing.JTable();
+        jButtonAnalyse = new javax.swing.JButton();
+        jTextFieldIdAnalyse = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabelPatient.setText("Liste des patients");
+
+        jTablePatient.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+            },
+            new String [] {
+                "Identifiant", "Nom", "Prenom", "Login"
+            }
+        ));
+        jScrollPane2.setViewportView(jTablePatient);
+
+        jButtonAddPatient.setText("Ajouter un Patient");
+        jButtonAddPatient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddPatientActionPerformed(evt);
+            }
+        });
+
+        jButtonUpdatePatient.setText("Mise à jour du patient");
+        jButtonUpdatePatient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonUpdatePatientActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Prescription Analyse");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jTableAnalyses.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+            },
+            new String [] {
+                "Identifiant Analyse", "Item", "Valeur"
+            }
+        ));
+        jScrollPane1.setViewportView(jTableAnalyses);
+
+        jButtonAnalyse.setText("Rafraichir tous les résultats d'analyses");
+        jButtonAnalyse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAnalyseActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Recherche analyse id spécifique");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabelPatient)
+                        .addGap(36, 36, 36)
+                        .addComponent(jButtonAddPatient)
+                        .addGap(45, 45, 45)
+                        .addComponent(jButtonUpdatePatient)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(50, 50, 50)
+                        .addComponent(jTextFieldIdAnalyse, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonAnalyse))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(133, 133, 133)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 595, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(111, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(50, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButtonAddPatient)
+                            .addComponent(jLabelPatient))
+                        .addGap(15, 15, 15))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButtonUpdatePatient)
+                            .addComponent(jButton1)
+                            .addComponent(jButtonAnalyse)
+                            .addComponent(jTextFieldIdAnalyse, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton2))
+                        .addGap(18, 18, 18)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane2))
+                .addGap(36, 36, 36))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButtonAddPatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddPatientActionPerformed
+        // TODO add your handling code here:
+        guiAddPatient.setVisible(true);
+        LoadPatient();
+        
+    }//GEN-LAST:event_jButtonAddPatientActionPerformed
+
+    private void jButtonUpdatePatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdatePatientActionPerformed
+        // TODO add your handling code here:
+        Patient patient = new Patient();
+        DefaultTableModel dlm = (DefaultTableModel)jTablePatient.getModel();
+        if(!jTablePatient.getSelectionModel().isSelectionEmpty())
+        {
+            int row = jTablePatient.getSelectedRow();
+            patient.setIdPatient((int)dlm.getValueAt(row, 0));
+            patient.setNom((String)dlm.getValueAt(row, 1));
+            patient.setPrenom((String)dlm.getValueAt(row, 2));
+            patient.setLogin((String)dlm.getValueAt(row, 3));
+            guiUpdatePatient.setPatient(patient);
+            guiUpdatePatient.setVisible(true);
+        }
+        LoadPatient();
+                
+    }//GEN-LAST:event_jButtonUpdatePatientActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+            
+        guiDemandeAnalyse.setIdMedecin(idMedecin);
+        DefaultTableModel dlm = (DefaultTableModel)jTablePatient.getModel();
+        int row = jTablePatient.getSelectedRow();
+        guiDemandeAnalyse.setIdPatient((int)dlm.getValueAt(row, 0));
+        guiDemandeAnalyse.setVisible(true);
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButtonAnalyseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnalyseActionPerformed
+    
+        LoadAnalyses(0);
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonAnalyseActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        int tmp = parseInt(jTextFieldIdAnalyse.getText());
+        LoadAnalyses(tmp);
+
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+    private void LoadAnalyses(int id)
+    {
+        jTableAnalyses.setModel(new javax.swing.table.DefaultTableModel(
+        new Object [][] {
+        },
+        new String [] {
+            "Identifiant Analyse", "Item", "Valeur"
+        }
+        ));
+        DefaultTableModel dlm = (DefaultTableModel)jTableAnalyses.getModel();
+        Vector<Analyses> listAnalyses = new Vector();
+        Analyses var = new Analyses();
+        if(id == 0)
+            listAnalyses= eJBAnalyses.getAnalyses();
+        else
+        {
+            
+            var = eJBAnalyses.getAnalyses(id);
+            listAnalyses.add(var);
+        }
+            
+        for(int i=0 ; i < listAnalyses.size();i++)
+        {
+            Analyses p = listAnalyses.get(i);
+            String item[] = p.getItem().split("@");
+            String valeur[] = p.getValeur().split("@");
+            for(int j =0;j<valeur.length;j++)
+            {
+                Vector tmp = new Vector();
+                tmp.add(p.getIdAnalyses());
+                tmp.add(item[j]);
+                tmp.add(valeur[j]);
+                dlm.addRow(tmp);
+            }            
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -128,14 +359,41 @@ public class Medecin extends javax.swing.JFrame implements MessageListener {
     public void onMessage(Message message) {
         try
         {
-            TextMessage tm = (TextMessage)message;
             
-            System.out.println("Message = " + tm.getText());
+            TextMessage tm = (TextMessage)message;
+            DefaultTableModel dlm = (DefaultTableModel)jTableAnalyses.getModel();
+            if(!tm.getBooleanProperty("toMDB"))
+            {
+                String str = tm.getText();
+                String chaine[] = str.split("@@");
+                String item[] = chaine[1].split("@");
+                String valeur[] = chaine[2].split("@");
+                for(int j =0;j<valeur.length;j++)
+                {
+                    Vector tmp = new Vector();
+                    tmp.add(chaine[0]);
+                    tmp.add(item[j]);
+                    tmp.add(valeur[j]);
+                    dlm.addRow(tmp);
+                }            
+                
+            }
         } catch (JMSException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Medecin.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonAddPatient;
+    private javax.swing.JButton jButtonAnalyse;
+    private javax.swing.JButton jButtonUpdatePatient;
+    private javax.swing.JLabel jLabelPatient;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTableAnalyses;
+    private javax.swing.JTable jTablePatient;
+    private javax.swing.JTextField jTextFieldIdAnalyse;
     // End of variables declaration//GEN-END:variables
 }

@@ -9,6 +9,8 @@
             <name>EJBModule</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <included-library dirs="200">reference.JavaLibraryRemote.jar</included-library>
+            <included-library dirs="200">libs.MySQLDriver.classpath</included-library>
+            <included-library dirs="200">file.reference.JPA.jar</included-library>
             <source-roots>
                 <root id="src.dir" name="Source Packages"/>
             </source-roots>
