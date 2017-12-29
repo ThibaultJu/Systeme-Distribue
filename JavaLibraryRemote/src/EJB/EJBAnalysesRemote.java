@@ -9,7 +9,6 @@ import entities.Analyses;
 import entities.Demande;
 import java.util.Vector;
 import javax.ejb.Remote;
-import javax.jms.Session;
 
 /**
  *

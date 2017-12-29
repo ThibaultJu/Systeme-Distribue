@@ -55,6 +55,7 @@ public class EJBAnalyses implements EJBAnalysesRemote {
     }
 
     @Override
+    @RolesAllowed("Medecin")
     public void sendMessageQueue(String message) {
         
         sendJMSMessageToMyQueue(message);
@@ -65,6 +66,7 @@ public class EJBAnalyses implements EJBAnalysesRemote {
     }
 
     @Override
+    @RolesAllowed( "Laborantin")
     public void sendMessageTopic(String message,boolean MDB) {
         try {
             
@@ -87,6 +89,7 @@ public class EJBAnalyses implements EJBAnalysesRemote {
     }
     
     @Override
+    @RolesAllowed({"Medecin", "Laborantin"})
     public Analyses getAnalyses(int id)
     {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("EJBModulePU");
