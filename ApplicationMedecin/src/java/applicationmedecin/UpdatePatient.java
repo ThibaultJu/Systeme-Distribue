@@ -6,7 +6,6 @@
 package applicationmedecin;
 
 import EJB.EJBPatientRemote;
-import static applicationmedecin.Medecin.eJBPatient;
 import entities.Patient;
 import javax.ejb.EJB;
 

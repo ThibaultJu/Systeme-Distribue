@@ -7,12 +7,8 @@ package MDB;
 
 import entities.*;
 import static java.lang.Integer.parseInt;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.ActivationConfigProperty;
@@ -53,8 +49,6 @@ public class MDBLog implements MessageListener {
             TextMessage tm = (TextMessage) message;
             Calendar myCalendar = Calendar.getInstance();
             Date myDate = myCalendar.getTime();
-            System.out.println("-------Message recu par le MDB : " + tm.getText());
-            System.out.println("date fin analyse" + myDate);
             int id = parseInt(tm.getText());
             
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("EJBModulePU");
@@ -71,11 +65,9 @@ public class MDBLog implements MessageListener {
                 em.getTransaction().rollback();
             }
             Date dateDemande = c.getDateHeureDemande();
-            System.out.println("date fin demande" + dateDemande);
             int secondes = MinutesBetween(dateDemande,myDate);
             int heures = secondes / (60 * 60);secondes = secondes % (60 * 60);
             int minutes = secondes / (60);secondes = secondes % (60);
-            //System.out.println("La durée de traitement de l’analyse " + tm.getText() + " a été de " + heures +  "h " + minutes + " min" + secondes + "secondes");
             //ajout dans log
             Logs log = new Logs();
             log.setIdLogs(id);
@@ -102,36 +94,4 @@ public class MDBLog implements MessageListener {
              return (int)( (d2.getTime() - d1.getTime()) / (1000));
      } 
     
-    public Patient getPatient(int id)
-    {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EJBModulePU");
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        Patient c = new Patient();
-        try
-        {
-            /*c.setIdPatient(3);
-            c.setNom("Hooghen");
-            c.setPrenom("Vincent");
-            c.setLogin("Vince");
-            
-            em.persist(c);*/
-            
-            Patient p2 = em.find(Patient.class, id);
-            
-            System.out.printf(p2.getNom());
-            
-            em.getTransaction().commit();
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            em.getTransaction().rollback();
-        }
-        finally
-        {
-            em.close();
-        }
-        return c;
-    }
 }

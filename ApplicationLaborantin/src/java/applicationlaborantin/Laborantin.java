@@ -8,8 +8,6 @@ package applicationlaborantin;
 import EJB.EJBAnalysesRemote;
 import entities.Analyses;
 import static java.lang.Integer.parseInt;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;

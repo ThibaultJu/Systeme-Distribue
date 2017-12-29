@@ -109,9 +109,6 @@ public class Patient extends javax.swing.JFrame {
         String valeur[] = analyse.getValeur().split("@");
         for(int j =0;j<valeur.length;j++)
         {
-            /*Vector tmp = new Vector();
-            tmp.add(item[j]);
-            tmp.add(valeur[j]);*/
             jTextAreaAnalyse.append("\n"+item[j] + " = "+ valeur[j]);
         }      
         
